@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>人生坐标精神原型测试</title>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:PingFang SC,Microsoft YaHei,sans-serif;
+background:linear-gradient(180deg,#020617,#0f172a);
+color:#f8fafc;
+display:flex;
+justify-content:center;
+padding:40px 20px;
+}
+
+.container{
+width:100%;
+max-width:640px;
+background:rgba(30,41,59,0.95);
+border-radius:24px;
+padding:40px;
+box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+
+h1{text-align:center}
+
+.btn{
+width:100%;
+padding:18px;
+margin:12px 0;
+border:none;
+border-radius:14px;
+background:#334155;
+color:white;
+cursor:pointer;
+transition:.3s;
+text-align:left;
+font-size:15px;
+}
+
+.btn:hover{
+background:#6366f1;
+transform:translateY(-2px);
+}
+
+.hidden{display:none}
+
+.archetype-name{
+font-size:40px;
+text-align:center;
+color:#6366f1;
+margin:20px 0;
+}
+
+.keywords{
+text-align:center;
+color:#94a3b8;
+letter-spacing:3px;
+}
+
+.metaphor{
+border-left:4px solid #6366f1;
+padding-left:18px;
+margin:30px 0;
+font-style:italic;
+line-height:1.8;
+}
+
+#chart-container{
+height:300px;
+margin:30px 0;
+}
+
+.progress{
+height:4px;
+background:#334155;
+border-radius:4px;
+overflow:hidden;
+margin-bottom:30px;
+}
+
+.progress-fill{
+height:100%;
+background:#6366f1;
+width:0%;
+transition:.3s;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="welcome">
+<h1>🔍 人生坐标精神原型测试</h1>
+
+<p style="text-align:center;color:#94a3b8">
+探索你的生命结构与精神引力场
+</p>
+
+<button class="btn" style="text-align:center;background:#6366f1"
+onclick="startTest()">开始探索</button>
+</div>
+
+<div id="quiz" class="hidden">
+
+<div class="progress">
+<div class="progress-fill" id="progress"></div>
+</div>
+
+<h2 id="question"></h2>
+
+<div id="options"></div>
+
+</div>
+
+<div id="result" class="hidden">
+
+<div class="keywords" id="keywords"></div>
+<div class="archetype-name" id="name"></div>
+
+<div id="chart-container"></div>
+
+<div id="report" style="font-size:15px;line-height:1.8"></div>
+
+<button class="btn" style="margin-top:40px;text-align:center"
+onclick="location.reload()">重新测试</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* ===== 15题题库 ===== */
+
+const questions=[
+
+{ text:"当你感到疲惫时更倾向于？",
+options:[
+{text:"独处静默",type:"Wilderness Walker"},
+{text:"深度交流",type:"Soul Resonator"},
+{text:"释放能量运动",type:"Peak Climber"},
+{text:"整理规划",type:"Order Architect"}
+]},
+
+{ text:"面对未知挑战，你第一反应是？",
+options:[
+{text:"探索可能",type:"Boundless Explorer"},
+{text:"谨慎分析",type:"Wise Hermit"},
+{text:"相信直觉",type:"Wilderness Walker"},
+{text:"承担责任",type:"Gentle Guardian"}
+]},
+
+{ text:"你更相信哪种力量？",
+options:[
+{text:"自由选择",type:"Wilderness Walker"},
+{text:"长期坚持",type:"Peak Climber"},
+{text:"关系连接",type:"Soul Resonator"},
+{text:"规则结构",type:"Order Architect"}
+]},
+
+{ text:"冲突中你更可能？",
+options:[
+{text:"回避冲突",type:"Wilderness Walker"},
+{text:"坚持原则",type:"Order Architect"},
+{text:"理解情绪",type:"Soul Resonator"},
+{text:"解决问题",type:"Peak Climber"}
+]},
+
+{ text:"如果要用一个词形容理想的人生状态，那是？",
+options:[
+{text:"从容",type:"Wilderness Walker"},
+{text:"成就",type:"Peak Climber"},
+{text:"温暖",type:"Soul Resonator"},
+{text:"深度",type:"Order Architect"}
+]},
+
+{ text:"成功意味着？",
+options:[
+{text:"自由",type:"Wilderness Walker"},
+{text:"认可",type:"Peak Climber"},
+{text:"安定",type:"Wise Hermit"},
+{text:"影响",type:"Boundless Explorer"}
+]},
+
+{ text:"你最害怕？",
+options:[
+{text:"束缚",type:"Wilderness Walker"},
+{text:"否定价值",type:"Peak Climber"},
+{text:"失去连接",type:"Soul Resonator"},
+{text:"失去秩序",type:"Order Architect"}
+]},
+
+{ text:"成长方式更像？",
+options:[
+{text:"持续探索",type:"Boundless Explorer"},
+{text:"深度沉淀",type:"Wise Hermit"},
+{text:"挑战极限",type:"Peak Climber"},
+{text:"长期守护",type:"Gentle Guardian"}
+]},
+
+{ text:"压力下你更可能？",
+options:[
+{text:"拉开距离",type:"Wilderness Walker"},
+{text:"分析问题",type:"Order Architect"},
+{text:"寻找支持",type:"Soul Resonator"},
+{text:"承担责任",type:"Gentle Guardian"}
+]},
+
+{ text:"欣赏哪种人？",
+options:[
+{text:"自由独立",type:"Wilderness Walker"},
+{text:"意志坚定",type:"Peak Climber"},
+{text:"温暖共情",type:"Soul Resonator"},
+{text:"理性清醒",type:"Wise Hermit"}
+]},
+
+{ text:"人生更像？",
+options:[
+{text:"探索旅程",type:"Boundless Explorer"},
+{text:"修行道路",type:"Wise Hermit"},
+{text:"攀登之路",type:"Peak Climber"},
+{text:"守护之路",type:"Gentle Guardian"}
+]},
+
+{ text:"希望被记住为？",
+options:[
+{text:"自由思考者",type:"Wilderness Walker"},
+{text:"创造价值者",type:"Peak Climber"},
+{text:"连接世界者",type:"Soul Resonator"},
+{text:"清醒观察者",type:"Wise Hermit"}
+]},
+
+{ text:"当世界嘈杂时？",
+options:[
+{text:"保持距离",type:"Wilderness Walker"},
+{text:"思考本质",type:"Wise Hermit"},
+{text:"连接他人",type:"Soul Resonator"},
+{text:"行动解决",type:"Peak Climber"}
+]},
+
+{ text:"你的人生像？",
+options:[
+{text:"探索之海",type:"Boundless Explorer"},
+{text:"智慧之湖",type:"Wise Hermit"},
+{text:"燃烧之山",type:"Peak Climber"},
+{text:"守护之林",type:"Gentle Guardian"}
+]},
+
+{ text:"终极追求是？",
+options:[
+{text:"自由",type:"Wilderness Walker"},
+{text:"成长",type:"Peak Climber"},
+{text:"理解世界",type:"Wise Hermit"},
+{text:"连接世界",type:"Soul Resonator"}
+]}
+];
+
+/* ===== 结果模型 ===== */
+
+const results={
+"Wilderness Walker":{
+name:"旷野漫游者",
+keywords:"松弛 / 自由 / 感知型",
+metaphor:"你像一阵穿过山谷的风，不属于任何叶子，却抚摸过整片森林。",
+base:[90,20,50,40,60,80]
+},
+
+"Order Architect":{
+name:"秩序铸造师",
+keywords:"结构 / 理性 / 控制感",
+metaphor:"在混乱宇宙中构建稳定的规则引力场。",
+base:[30,95,40,90,60,20]
+},
+
+"Soul Resonator":{
+name:"灵魂共振者",
+keywords:"温暖 / 连接 / 情感",
+metaphor:"森林深处的篝火，温暖自己，也照亮旅人。",
+base:[50,30,95,40,70,40]
+},
+
+"Peak Climber":{
+name:"孤峰攀登者",
+keywords:"极致 / 成就 / 意志",
+metaphor:"破冰前行的船，为唯一航道撞碎坚冰。",
+base:[40,80,20,95,50,70]
+},
+
+"Wise Hermit":{
+name:"智慧隐修者",
+keywords:"通透 / 内省 / 观察",
+metaphor:"平静的湖面，映照万物却不留痕迹。",
+base:[70,40,50,60,95,20]
+},
+
+"Boundless Explorer":{
+name:"无界探险家",
+keywords:"探索 / 变化",
+metaphor:"一颗裂变的种子，渴望冲破土壤。",
+base:[85,30,40,70,40,95]
+},
+
+"Gentle Guardian":{
+name:"温暖守护者",
+keywords:"责任 / 关怀",
+metaphor:"坚固堤坝温柔环抱水源。",
+base:[30,70,90,60,50,20]
+}
+};
+
+let current=0;
+let finalType="Wilderness Walker";
+
+function startTest(){
+document.getElementById("welcome").classList.add("hidden");
+document.getElementById("quiz").classList.remove("hidden");
+renderQuestion();
+}
+
+function renderQuestion(){
+
+const q=questions[current];
+
+document.getElementById("question").innerText=q.text;
+
+const container=document.getElementById("options");
+container.innerHTML="";
+
+document.getElementById("progress").style.width=
+((current)/questions.length)*100+"%";
+
+q.options.forEach(opt=>{
+
+const btn=document.createElement("button");
+btn.className="btn";
+btn.innerText=opt.text;
+
+btn.onclick=()=>{
+
+if(opt.type) finalType=opt.type;
+
+current++;
+
+if(current<questions.length){
+renderQuestion();
+}else{
+showResult();
+}
+
+};
+
+container.appendChild(btn);
+
+});
+
+}
+
+function showResult(){
+
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById("result").classList.remove("hidden");
+
+const data=results[finalType];
+
+document.getElementById("keywords").innerText=data.keywords;
+document.getElementById("name").innerText=data.name;
+
+/* 雷达图 */
+
+const chart=echarts.init(
+document.getElementById("chart-container")
+);
+
+chart.setOption({
+radar:{
+indicator:[
+{name:"自由度",max:100},
+{name:"掌控力",max:100},
+{name:"共情力",max:100},
+{name:"专注度",max:100},
+{name:"内省力",max:100},
+{name:"冒险性",max:100}
+]
+},
+series:[{
+type:"radar",
+data:[{value:data.base}]
+}]
+});
+
+/* 报告 */
+
+document.getElementById("report").innerHTML=`
+<div class="metaphor">${data.metaphor}</div>
+
+<p>
+在精神原型结构中，<b>${data.name}</b>
+代表一种稳定的生命张力模式。
+
+你的精神倾向更接近：
+<b>${data.keywords}</b>
+</p>
+`;
+
+}
+
+</script>
+
+</body>
+</html>
