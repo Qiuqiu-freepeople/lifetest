@@ -1,0 +1,426 @@
+{\rtf1\ansi\ansicpg936\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="zh-CN">\
+<head>\
+<meta charset="UTF-8">\
+<title>\uc0\u20154 \u29983 \u22352 \u26631 \u31934 \u31070 \u21407 \u22411 \u27979 \u35797 </title>\
+\
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>\
+\
+<style>\
+\
+body\{\
+margin:0;\
+font-family:PingFang SC,Microsoft YaHei,sans-serif;\
+background:linear-gradient(180deg,#020617,#0f172a);\
+color:#f8fafc;\
+display:flex;\
+justify-content:center;\
+padding:40px 20px;\
+\}\
+\
+.container\{\
+width:100%;\
+max-width:640px;\
+background:rgba(30,41,59,0.95);\
+border-radius:24px;\
+padding:40px;\
+box-shadow:0 30px 80px rgba(0,0,0,.6);\
+\}\
+\
+h1\{text-align:center\}\
+\
+.btn\{\
+width:100%;\
+padding:18px;\
+margin:12px 0;\
+border:none;\
+border-radius:14px;\
+background:#334155;\
+color:white;\
+cursor:pointer;\
+transition:.3s;\
+text-align:left;\
+font-size:15px;\
+\}\
+\
+.btn:hover\{\
+background:#6366f1;\
+transform:translateY(-2px);\
+\}\
+\
+.hidden\{display:none\}\
+\
+.archetype-name\{\
+font-size:40px;\
+text-align:center;\
+color:#6366f1;\
+margin:20px 0;\
+\}\
+\
+.keywords\{\
+text-align:center;\
+color:#94a3b8;\
+letter-spacing:3px;\
+\}\
+\
+.metaphor\{\
+border-left:4px solid #6366f1;\
+padding-left:18px;\
+margin:30px 0;\
+font-style:italic;\
+line-height:1.8;\
+\}\
+\
+#chart-container\{\
+height:300px;\
+margin:30px 0;\
+\}\
+\
+.progress\{\
+height:4px;\
+background:#334155;\
+border-radius:4px;\
+overflow:hidden;\
+margin-bottom:30px;\
+\}\
+\
+.progress-fill\{\
+height:100%;\
+background:#6366f1;\
+width:0%;\
+transition:.3s;\
+\}\
+\
+</style>\
+</head>\
+\
+<body>\
+\
+<div class="container">\
+\
+<div id="welcome">\
+<h1>\uc0\u55357 \u56589  \u20154 \u29983 \u22352 \u26631 \u31934 \u31070 \u21407 \u22411 \u27979 \u35797 </h1>\
+\
+<p style="text-align:center;color:#94a3b8">\
+\uc0\u25506 \u32034 \u20320 \u30340 \u29983 \u21629 \u32467 \u26500 \u19982 \u31934 \u31070 \u24341 \u21147 \u22330 \
+</p>\
+\
+<button class="btn" style="text-align:center;background:#6366f1"\
+onclick="startTest()">\uc0\u24320 \u22987 \u25506 \u32034 </button>\
+</div>\
+\
+<div id="quiz" class="hidden">\
+\
+<div class="progress">\
+<div class="progress-fill" id="progress"></div>\
+</div>\
+\
+<h2 id="question"></h2>\
+\
+<div id="options"></div>\
+\
+</div>\
+\
+<div id="result" class="hidden">\
+\
+<div class="keywords" id="keywords"></div>\
+<div class="archetype-name" id="name"></div>\
+\
+<div id="chart-container"></div>\
+\
+<div id="report" style="font-size:15px;line-height:1.8"></div>\
+\
+<button class="btn" style="margin-top:40px;text-align:center"\
+onclick="location.reload()">\uc0\u37325 \u26032 \u27979 \u35797 </button>\
+\
+</div>\
+\
+</div>\
+\
+<script>\
+\
+/* ===== 15\uc0\u39064 \u39064 \u24211  ===== */\
+\
+const questions=[\
+\
+\{ text:"\uc0\u24403 \u20320 \u24863 \u21040 \u30130 \u24811 \u26102 \u26356 \u20542 \u21521 \u20110 \u65311 ",\
+options:[\
+\{text:"\uc0\u29420 \u22788 \u38745 \u40664 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u28145 \u24230 \u20132 \u27969 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u37322 \u25918 \u33021 \u37327 \u36816 \u21160 ",type:"Peak Climber"\},\
+\{text:"\uc0\u25972 \u29702 \u35268 \u21010 ",type:"Order Architect"\}\
+]\},\
+\
+\{ text:"\uc0\u38754 \u23545 \u26410 \u30693 \u25361 \u25112 \u65292 \u20320 \u31532 \u19968 \u21453 \u24212 \u26159 \u65311 ",\
+options:[\
+\{text:"\uc0\u25506 \u32034 \u21487 \u33021 ",type:"Boundless Explorer"\},\
+\{text:"\uc0\u35880 \u24910 \u20998 \u26512 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u30456 \u20449 \u30452 \u35273 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u25215 \u25285 \u36131 \u20219 ",type:"Gentle Guardian"\}\
+]\},\
+\
+\{ text:"\uc0\u20320 \u26356 \u30456 \u20449 \u21738 \u31181 \u21147 \u37327 \u65311 ",\
+options:[\
+\{text:"\uc0\u33258 \u30001 \u36873 \u25321 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u38271 \u26399 \u22362 \u25345 ",type:"Peak Climber"\},\
+\{text:"\uc0\u20851 \u31995 \u36830 \u25509 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u35268 \u21017 \u32467 \u26500 ",type:"Order Architect"\}\
+]\},\
+\
+\{ text:"\uc0\u20914 \u31361 \u20013 \u20320 \u26356 \u21487 \u33021 \u65311 ",\
+options:[\
+\{text:"\uc0\u22238 \u36991 \u20914 \u31361 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u22362 \u25345 \u21407 \u21017 ",type:"Order Architect"\},\
+\{text:"\uc0\u29702 \u35299 \u24773 \u32490 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u35299 \u20915 \u38382 \u39064 ",type:"Peak Climber"\}\
+]\},\
+\
+\{ text:"\uc0\u22914 \u26524 \u35201 \u29992 \u19968 \u20010 \u35789 \u24418 \u23481 \u29702 \u24819 \u30340 \u20154 \u29983 \u29366 \u24577 \u65292 \u37027 \u26159 \u65311 ",\
+options:[\
+\{text:"\uc0\u20174 \u23481 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u25104 \u23601 ",type:"Peak Climber"\},\
+\{text:"\uc0\u28201 \u26262 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u28145 \u24230 ",type:"Order Architect"\}\
+]\},\
+\
+\{ text:"\uc0\u25104 \u21151 \u24847 \u21619 \u30528 \u65311 ",\
+options:[\
+\{text:"\uc0\u33258 \u30001 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u35748 \u21487 ",type:"Peak Climber"\},\
+\{text:"\uc0\u23433 \u23450 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u24433 \u21709 ",type:"Boundless Explorer"\}\
+]\},\
+\
+\{ text:"\uc0\u20320 \u26368 \u23475 \u24597 \u65311 ",\
+options:[\
+\{text:"\uc0\u26463 \u32538 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u21542 \u23450 \u20215 \u20540 ",type:"Peak Climber"\},\
+\{text:"\uc0\u22833 \u21435 \u36830 \u25509 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u22833 \u21435 \u31209 \u24207 ",type:"Order Architect"\}\
+]\},\
+\
+\{ text:"\uc0\u25104 \u38271 \u26041 \u24335 \u26356 \u20687 \u65311 ",\
+options:[\
+\{text:"\uc0\u25345 \u32493 \u25506 \u32034 ",type:"Boundless Explorer"\},\
+\{text:"\uc0\u28145 \u24230 \u27785 \u28096 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u25361 \u25112 \u26497 \u38480 ",type:"Peak Climber"\},\
+\{text:"\uc0\u38271 \u26399 \u23432 \u25252 ",type:"Gentle Guardian"\}\
+]\},\
+\
+\{ text:"\uc0\u21387 \u21147 \u19979 \u20320 \u26356 \u21487 \u33021 \u65311 ",\
+options:[\
+\{text:"\uc0\u25289 \u24320 \u36317 \u31163 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u20998 \u26512 \u38382 \u39064 ",type:"Order Architect"\},\
+\{text:"\uc0\u23547 \u25214 \u25903 \u25345 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u25215 \u25285 \u36131 \u20219 ",type:"Gentle Guardian"\}\
+]\},\
+\
+\{ text:"\uc0\u27427 \u36175 \u21738 \u31181 \u20154 \u65311 ",\
+options:[\
+\{text:"\uc0\u33258 \u30001 \u29420 \u31435 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u24847 \u24535 \u22362 \u23450 ",type:"Peak Climber"\},\
+\{text:"\uc0\u28201 \u26262 \u20849 \u24773 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u29702 \u24615 \u28165 \u37266 ",type:"Wise Hermit"\}\
+]\},\
+\
+\{ text:"\uc0\u20154 \u29983 \u26356 \u20687 \u65311 ",\
+options:[\
+\{text:"\uc0\u25506 \u32034 \u26053 \u31243 ",type:"Boundless Explorer"\},\
+\{text:"\uc0\u20462 \u34892 \u36947 \u36335 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u25856 \u30331 \u20043 \u36335 ",type:"Peak Climber"\},\
+\{text:"\uc0\u23432 \u25252 \u20043 \u36335 ",type:"Gentle Guardian"\}\
+]\},\
+\
+\{ text:"\uc0\u24076 \u26395 \u34987 \u35760 \u20303 \u20026 \u65311 ",\
+options:[\
+\{text:"\uc0\u33258 \u30001 \u24605 \u32771 \u32773 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u21019 \u36896 \u20215 \u20540 \u32773 ",type:"Peak Climber"\},\
+\{text:"\uc0\u36830 \u25509 \u19990 \u30028 \u32773 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u28165 \u37266 \u35266 \u23519 \u32773 ",type:"Wise Hermit"\}\
+]\},\
+\
+\{ text:"\uc0\u24403 \u19990 \u30028 \u22024 \u26434 \u26102 \u65311 ",\
+options:[\
+\{text:"\uc0\u20445 \u25345 \u36317 \u31163 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u24605 \u32771 \u26412 \u36136 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u36830 \u25509 \u20182 \u20154 ",type:"Soul Resonator"\},\
+\{text:"\uc0\u34892 \u21160 \u35299 \u20915 ",type:"Peak Climber"\}\
+]\},\
+\
+\{ text:"\uc0\u20320 \u30340 \u20154 \u29983 \u20687 \u65311 ",\
+options:[\
+\{text:"\uc0\u25506 \u32034 \u20043 \u28023 ",type:"Boundless Explorer"\},\
+\{text:"\uc0\u26234 \u24935 \u20043 \u28246 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u29123 \u28903 \u20043 \u23665 ",type:"Peak Climber"\},\
+\{text:"\uc0\u23432 \u25252 \u20043 \u26519 ",type:"Gentle Guardian"\}\
+]\},\
+\
+\{ text:"\uc0\u32456 \u26497 \u36861 \u27714 \u26159 \u65311 ",\
+options:[\
+\{text:"\uc0\u33258 \u30001 ",type:"Wilderness Walker"\},\
+\{text:"\uc0\u25104 \u38271 ",type:"Peak Climber"\},\
+\{text:"\uc0\u29702 \u35299 \u19990 \u30028 ",type:"Wise Hermit"\},\
+\{text:"\uc0\u36830 \u25509 \u19990 \u30028 ",type:"Soul Resonator"\}\
+]\}\
+];\
+\
+/* ===== \uc0\u32467 \u26524 \u27169 \u22411  ===== */\
+\
+const results=\{\
+"Wilderness Walker":\{\
+name:"\uc0\u26103 \u37326 \u28459 \u28216 \u32773 ",\
+keywords:"\uc0\u26494 \u24347  / \u33258 \u30001  / \u24863 \u30693 \u22411 ",\
+metaphor:"\uc0\u20320 \u20687 \u19968 \u38453 \u31359 \u36807 \u23665 \u35895 \u30340 \u39118 \u65292 \u19981 \u23646 \u20110 \u20219 \u20309 \u21494 \u23376 \u65292 \u21364 \u25242 \u25720 \u36807 \u25972 \u29255 \u26862 \u26519 \u12290 ",\
+base:[90,20,50,40,60,80]\
+\},\
+\
+"Order Architect":\{\
+name:"\uc0\u31209 \u24207 \u38136 \u36896 \u24072 ",\
+keywords:"\uc0\u32467 \u26500  / \u29702 \u24615  / \u25511 \u21046 \u24863 ",\
+metaphor:"\uc0\u22312 \u28151 \u20081 \u23431 \u23449 \u20013 \u26500 \u24314 \u31283 \u23450 \u30340 \u35268 \u21017 \u24341 \u21147 \u22330 \u12290 ",\
+base:[30,95,40,90,60,20]\
+\},\
+\
+"Soul Resonator":\{\
+name:"\uc0\u28789 \u39746 \u20849 \u25391 \u32773 ",\
+keywords:"\uc0\u28201 \u26262  / \u36830 \u25509  / \u24773 \u24863 ",\
+metaphor:"\uc0\u26862 \u26519 \u28145 \u22788 \u30340 \u31709 \u28779 \u65292 \u28201 \u26262 \u33258 \u24049 \u65292 \u20063 \u29031 \u20142 \u26053 \u20154 \u12290 ",\
+base:[50,30,95,40,70,40]\
+\},\
+\
+"Peak Climber":\{\
+name:"\uc0\u23396 \u23792 \u25856 \u30331 \u32773 ",\
+keywords:"\uc0\u26497 \u33268  / \u25104 \u23601  / \u24847 \u24535 ",\
+metaphor:"\uc0\u30772 \u20912 \u21069 \u34892 \u30340 \u33337 \u65292 \u20026 \u21807 \u19968 \u33322 \u36947 \u25758 \u30862 \u22362 \u20912 \u12290 ",\
+base:[40,80,20,95,50,70]\
+\},\
+\
+"Wise Hermit":\{\
+name:"\uc0\u26234 \u24935 \u38544 \u20462 \u32773 ",\
+keywords:"\uc0\u36890 \u36879  / \u20869 \u30465  / \u35266 \u23519 ",\
+metaphor:"\uc0\u24179 \u38745 \u30340 \u28246 \u38754 \u65292 \u26144 \u29031 \u19975 \u29289 \u21364 \u19981 \u30041 \u30165 \u36857 \u12290 ",\
+base:[70,40,50,60,95,20]\
+\},\
+\
+"Boundless Explorer":\{\
+name:"\uc0\u26080 \u30028 \u25506 \u38505 \u23478 ",\
+keywords:"\uc0\u25506 \u32034  / \u21464 \u21270 ",\
+metaphor:"\uc0\u19968 \u39063 \u35010 \u21464 \u30340 \u31181 \u23376 \u65292 \u28212 \u26395 \u20914 \u30772 \u22303 \u22756 \u12290 ",\
+base:[85,30,40,70,40,95]\
+\},\
+\
+"Gentle Guardian":\{\
+name:"\uc0\u28201 \u26262 \u23432 \u25252 \u32773 ",\
+keywords:"\uc0\u36131 \u20219  / \u20851 \u24576 ",\
+metaphor:"\uc0\u22362 \u22266 \u22564 \u22365 \u28201 \u26580 \u29615 \u25265 \u27700 \u28304 \u12290 ",\
+base:[30,70,90,60,50,20]\
+\}\
+\};\
+\
+let current=0;\
+let finalType="Wilderness Walker";\
+\
+function startTest()\{\
+document.getElementById("welcome").classList.add("hidden");\
+document.getElementById("quiz").classList.remove("hidden");\
+renderQuestion();\
+\}\
+\
+function renderQuestion()\{\
+\
+const q=questions[current];\
+\
+document.getElementById("question").innerText=q.text;\
+\
+const container=document.getElementById("options");\
+container.innerHTML="";\
+\
+document.getElementById("progress").style.width=\
+((current)/questions.length)*100+"%";\
+\
+q.options.forEach(opt=>\{\
+\
+const btn=document.createElement("button");\
+btn.className="btn";\
+btn.innerText=opt.text;\
+\
+btn.onclick=()=>\{\
+\
+if(opt.type) finalType=opt.type;\
+\
+current++;\
+\
+if(current<questions.length)\{\
+renderQuestion();\
+\}else\{\
+showResult();\
+\}\
+\
+\};\
+\
+container.appendChild(btn);\
+\
+\});\
+\
+\}\
+\
+function showResult()\{\
+\
+document.getElementById("quiz").classList.add("hidden");\
+document.getElementById("result").classList.remove("hidden");\
+\
+const data=results[finalType];\
+\
+document.getElementById("keywords").innerText=data.keywords;\
+document.getElementById("name").innerText=data.name;\
+\
+/* \uc0\u38647 \u36798 \u22270  */\
+\
+const chart=echarts.init(\
+document.getElementById("chart-container")\
+);\
+\
+chart.setOption(\{\
+radar:\{\
+indicator:[\
+\{name:"\uc0\u33258 \u30001 \u24230 ",max:100\},\
+\{name:"\uc0\u25484 \u25511 \u21147 ",max:100\},\
+\{name:"\uc0\u20849 \u24773 \u21147 ",max:100\},\
+\{name:"\uc0\u19987 \u27880 \u24230 ",max:100\},\
+\{name:"\uc0\u20869 \u30465 \u21147 ",max:100\},\
+\{name:"\uc0\u20882 \u38505 \u24615 ",max:100\}\
+]\
+\},\
+series:[\{\
+type:"radar",\
+data:[\{value:data.base\}]\
+\}]\
+\});\
+\
+/* \uc0\u25253 \u21578  */\
+\
+document.getElementById("report").innerHTML=`\
+<div class="metaphor">$\{data.metaphor\}</div>\
+\
+<p>\
+\uc0\u22312 \u31934 \u31070 \u21407 \u22411 \u32467 \u26500 \u20013 \u65292 <b>$\{data.name\}</b>\
+\uc0\u20195 \u34920 \u19968 \u31181 \u31283 \u23450 \u30340 \u29983 \u21629 \u24352 \u21147 \u27169 \u24335 \u12290 \
+\
+\uc0\u20320 \u30340 \u31934 \u31070 \u20542 \u21521 \u26356 \u25509 \u36817 \u65306 \
+<b>$\{data.keywords\}</b>\
+</p>\
+`;\
+\
+\}\
+\
+</script>\
+\
+</body>\
+</html>}
